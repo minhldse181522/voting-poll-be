@@ -1,4 +1,4 @@
-# Software Supporting Psychological Health in Schools
+# Voting Poll Real Time
 
 ## 1. Define model schema
 
