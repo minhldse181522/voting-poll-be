@@ -1,0 +1,13 @@
+model Performance {
+  id          BigInt    @id @default(autoincrement())
+
+  name        String    @unique @map("name") @db.VarChar(50)
+  vote        Int       @map("vote") @db.Integer
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy   String?   @map("created_by") @db.VarChar(36)
+  updatedAt   DateTime? @updatedAt @map("modified_at") @db.Timestamptz(3)
+  updatedBy   String?   @map("modified_by") @db.VarChar(36)
+
+  @@map("performance")
+}
