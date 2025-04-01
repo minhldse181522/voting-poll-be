@@ -3,15 +3,17 @@ import dotenv from "dotenv";
 import cors from "cors";
 import swagger from "./swagger";
 import userRoutes from "./routes/user.routes";
+import http from "http";
+import websocketService from "./socket/websocket.service";
 
 dotenv.config();
 
 async function bootstrap() {
   const app = express();
+  const server = http.createServer(app);
   const PORT = process.env.PORT || 8080;
 
   app.use(cors());
-
   app.use(express.json());
 
   // Routes
@@ -20,8 +22,11 @@ async function bootstrap() {
   // Swagger
   swagger(app);
 
+  // Khởi tạo WebSocket
+  websocketService.initialize(server);
+
   // Start server
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
   });
 }
