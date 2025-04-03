@@ -21,10 +21,31 @@ export class PerformanceController {
     }
   }
 
+  static async getAllPerformanceCategories(req: Request, res: Response): Promise<void> {
+    try {
+      const categoryId = Number(req.params.id);
+      const performances = await PerformanceService.getPerformancesByCategoryService(categoryId);
+      res.status(HTTP_STATUS.OK).json({
+        message: PERFORMANCES_MESSAGES.RETRIEVE_SUCCESS,
+        data: performances,
+      });
+    } catch (error: any) {
+      console.error(error);
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        message: PERFORMANCES_MESSAGES.RETRIEVE_FAILURE,
+        error: error.message,
+      });
+    }
+  }
+
   static async updateVotePerformance(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const updatedPerformance = await PerformanceService.votePerformanceService(Number(id));
+      const { categoryId } = req.body;
+      const updatedPerformance = await PerformanceService.votePerformanceService(
+        Number(id),
+        Number(categoryId),
+      );
       res.status(HTTP_STATUS.OK).json({
         message: PERFORMANCES_MESSAGES.UPDATE_SUCCESS,
         data: updatedPerformance,
