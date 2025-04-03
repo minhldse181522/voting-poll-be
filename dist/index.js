@@ -18,6 +18,7 @@ const cors_1 = __importDefault(require("cors"));
 const swagger_1 = __importDefault(require("./swagger"));
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const performance_routes_1 = __importDefault(require("./routes/performance.routes"));
+const category_routes_1 = __importDefault(require("./routes/category.routes"));
 const http_1 = __importDefault(require("http"));
 const websocket_service_1 = __importDefault(require("./socket/websocket.service"));
 dotenv_1.default.config();
@@ -31,6 +32,7 @@ function bootstrap() {
         // Routes
         app.use("/api", user_routes_1.default);
         app.use("/api", performance_routes_1.default);
+        app.use("/api", category_routes_1.default);
         // Swagger
         (0, swagger_1.default)(app);
         // Khởi tạo WebSocket

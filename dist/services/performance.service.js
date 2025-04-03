@@ -18,33 +18,62 @@ const client_1 = require("@prisma/client");
 const websocket_service_1 = __importDefault(require("../socket/websocket.service"));
 const prisma = new client_1.PrismaClient();
 class PerformanceService {
+    // Chỉ lấy performances
     static getPerformanceService() {
         return __awaiter(this, void 0, void 0, function* () {
             const performances = yield prisma.performance.findMany({
                 select: {
                     id: true,
                     name: true,
-                    vote: true,
                 },
             });
             return performances.map((performance) => ({
                 id: performance.id.toString(),
                 name: performance.name,
+            }));
+        });
+    }
+    // Lấy performance theo category
+    static getPerformancesByCategoryService(categoryId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const performanceCate = yield prisma.performanceCategory.findMany({
+                where: { category_id: BigInt(categoryId) },
+                select: {
+                    performances: { select: { id: true, name: true } },
+                    vote: true,
+                },
+            });
+            return performanceCate.map((performance) => ({
+                id: performance.performances.id.toString(),
+                name: performance.performances.name,
                 vote: performance.vote,
             }));
         });
     }
-    static votePerformanceService(performanceId) {
+    static votePerformanceService(performanceId, categoryId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const updatedPerformance = yield prisma.performance.update({
-                where: { id: performanceId },
+            yield prisma.performanceCategory.updateMany({
+                where: {
+                    performance_id: performanceId,
+                    category_id: categoryId,
+                },
                 data: { vote: { increment: 1 } },
             });
-            websocket_service_1.default.sendToAll("voteUpdate", {
-                id: updatedPerformance.id.toString(),
-                vote: updatedPerformance.vote,
+            const totalVotes = yield prisma.performanceCategory.aggregate({
+                _sum: { vote: true },
+                where: { performance_id: performanceId, category_id: categoryId },
             });
-            return Object.assign(Object.assign({}, updatedPerformance), { id: updatedPerformance.id.toString() });
+            // Gửi dữ liệu cập nhật qua WebSocket
+            websocket_service_1.default.sendToAll("voteUpdate", {
+                id: performanceId.toString(),
+                categoryId: categoryId.toString(),
+                vote: totalVotes._sum.vote || 0,
+            });
+            return {
+                id: performanceId.toString(),
+                categoryId: categoryId.toString(),
+                vote: totalVotes._sum.vote || 0,
+            };
         });
     }
 }

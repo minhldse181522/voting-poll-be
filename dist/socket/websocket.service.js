@@ -18,7 +18,10 @@ class WebSocketService {
     initialize(server) {
         this.io = new socket_io_1.Server(server, {
             cors: {
-                origin: "http://localhost:5173",
+                origin: [
+                    "http://localhost:5173", // FE dev
+                    "https://voting-poll-fe.vercel.app", // FE deploy trên Vercel
+                ],
                 // methods: ["GET", "POST"],
             },
         });

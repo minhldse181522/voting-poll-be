@@ -35,11 +35,31 @@ class PerformanceController {
             }
         });
     }
+    static getAllPerformanceCategories(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const categoryId = Number(req.params.id);
+                const performances = yield performance_service_1.PerformanceService.getPerformancesByCategoryService(categoryId);
+                res.status(httpStatus_1.default.OK).json({
+                    message: messages_1.PERFORMANCES_MESSAGES.RETRIEVE_SUCCESS,
+                    data: performances,
+                });
+            }
+            catch (error) {
+                console.error(error);
+                res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
+                    message: messages_1.PERFORMANCES_MESSAGES.RETRIEVE_FAILURE,
+                    error: error.message,
+                });
+            }
+        });
+    }
     static updateVotePerformance(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                const updatedPerformance = yield performance_service_1.PerformanceService.votePerformanceService(Number(id));
+                const { categoryId } = req.body;
+                const updatedPerformance = yield performance_service_1.PerformanceService.votePerformanceService(Number(id), Number(categoryId));
                 res.status(httpStatus_1.default.OK).json({
                     message: messages_1.PERFORMANCES_MESSAGES.UPDATE_SUCCESS,
                     data: updatedPerformance,
