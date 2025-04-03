@@ -4,6 +4,7 @@ import cors from "cors";
 import swagger from "./swagger";
 import userRoutes from "./routes/user.routes";
 import performanceRoutes from "./routes/performance.routes";
+import categoryRoutes from "./routes/category.routes";
 import http from "http";
 import websocketService from "./socket/websocket.service";
 
@@ -20,6 +21,7 @@ async function bootstrap() {
   // Routes
   app.use("/api", userRoutes);
   app.use("/api", performanceRoutes);
+  app.use("/api", categoryRoutes);
 
   // Swagger
   swagger(app);

@@ -1,0 +1,17 @@
+model PerformanceCategory {
+  @@id([performance_id, category_id]) 
+
+  performance_id  BigInt      @map("performance_id")
+  category_id     BigInt      @map("category_id")
+  vote            Int         @map("vote") @db.Integer
+
+  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy       String?     @map("created_by") @db.VarChar(36)
+  updatedAt       DateTime?   @updatedAt @map("modified_at") @db.Timestamptz(3)
+  updatedBy       String?     @map("modified_by") @db.VarChar(36)
+
+  performances Performance @relation(fields: [performance_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  categories   Category @relation(fields: [category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@map("performance_category")
+}
