@@ -43,4 +43,5 @@ export const CATEGORIES_MESSAGES = {
   UPDATE_FAILURE: "Failed to update performance",
   DELETE_SUCCESS: "Performance deleted successfully",
   DELETE_FAILURE: "Failed to delete performance",
+  CATEGORY_NAME_REQUIRED: "Category name is required",
 } as const;

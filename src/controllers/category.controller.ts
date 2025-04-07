@@ -20,4 +20,67 @@ export class CategoryController {
       });
     }
   }
+
+  static async createCategory(req: Request, res: Response): Promise<void> {
+    try {
+      const { categoryName, description } = req.body;
+      if (!categoryName) {
+        res.status(HTTP_STATUS.BAD_REQUEST).json({
+          message: CATEGORIES_MESSAGES.CATEGORY_NAME_REQUIRED,
+        });
+        return;
+      }
+
+      const category = await CategoryService.createCategoryService(
+        categoryName,
+        description
+      );
+      res.status(HTTP_STATUS.CREATED).json({
+        message: CATEGORIES_MESSAGES.CREATE_SUCCESS,
+        data: category,
+      });
+    } catch (error: any) {
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        message: CATEGORIES_MESSAGES.CREATE_FAILURE,
+        error: error.message,
+      });
+    }
+  }
+
+  static async updateCategory(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { categoryName, description } = req.body;
+      const category = await CategoryService.updateCategoryService(
+        id,
+        categoryName,
+        description
+      )
+      res.status(HTTP_STATUS.OK).json({
+        message: CATEGORIES_MESSAGES.UPDATE_SUCCESS,
+        data: category,
+      });
+    } catch (error: any) {
+       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        message: CATEGORIES_MESSAGES.UPDATE_FAILURE,
+        error: error.message,
+      });
+    }
+  }
+
+  static async deleteCategory(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      await CategoryService.deleteCategoryService(id);
+      res.status(HTTP_STATUS.OK).json({
+        message: CATEGORIES_MESSAGES.DELETE_SUCCESS,
+      });
+      
+    } catch (error: any) {
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        message: CATEGORIES_MESSAGES.DELETE_FAILURE,
+        error: error.message,
+      });
+    }
+  }
 }
