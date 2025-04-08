@@ -35,5 +35,65 @@ class CategoryController {
             }
         });
     }
+    static createCategory(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { categoryName, description } = req.body;
+                if (!categoryName) {
+                    res.status(httpStatus_1.default.BAD_REQUEST).json({
+                        message: messages_1.CATEGORIES_MESSAGES.CATEGORY_NAME_REQUIRED,
+                    });
+                    return;
+                }
+                const category = yield category_service_1.CategoryService.createCategoryService(categoryName, description);
+                res.status(httpStatus_1.default.CREATED).json({
+                    message: messages_1.CATEGORIES_MESSAGES.CREATE_SUCCESS,
+                    data: category,
+                });
+            }
+            catch (error) {
+                res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
+                    message: messages_1.CATEGORIES_MESSAGES.CREATE_FAILURE,
+                    error: error.message,
+                });
+            }
+        });
+    }
+    static updateCategory(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const { categoryName, description } = req.body;
+                const category = yield category_service_1.CategoryService.updateCategoryService(id, categoryName, description);
+                res.status(httpStatus_1.default.OK).json({
+                    message: messages_1.CATEGORIES_MESSAGES.UPDATE_SUCCESS,
+                    data: category,
+                });
+            }
+            catch (error) {
+                res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
+                    message: messages_1.CATEGORIES_MESSAGES.UPDATE_FAILURE,
+                    error: error.message,
+                });
+            }
+        });
+    }
+    static deleteCategory(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                yield category_service_1.CategoryService.deleteCategoryService(id);
+                res.status(httpStatus_1.default.OK).json({
+                    message: messages_1.CATEGORIES_MESSAGES.DELETE_SUCCESS,
+                });
+            }
+            catch (error) {
+                res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
+                    message: messages_1.CATEGORIES_MESSAGES.DELETE_FAILURE,
+                    error: error.message,
+                });
+            }
+        });
+    }
 }
 exports.CategoryController = CategoryController;

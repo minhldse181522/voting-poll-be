@@ -12,35 +12,51 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserService = getUserService;
-exports.getUserByIdService = getUserByIdService;
+exports.UserService = void 0;
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const prisma_1 = __importDefault(require("../prisma"));
-function getUserService() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const users = yield prisma_1.default.user.findMany({
-            select: {
-                id: true,
-                username: true,
-            },
+class UserService {
+    static getUserService() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const users = yield prisma_1.default.user.findMany({
+                select: {
+                    id: true,
+                    username: true,
+                },
+            });
+            return users.map((user) => ({
+                user_id: user.id.toString(),
+                username: user.username,
+            }));
         });
-        return users.map((user) => ({
-            user_id: user.id.toString(),
-            username: user.username,
-        }));
-    });
-}
-function getUserByIdService(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const user = yield prisma_1.default.user.findUnique({
-            where: { id: BigInt(id) },
+    }
+    static getUserByIdService(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield prisma_1.default.user.findUnique({
+                where: { id: BigInt(id) },
+            });
+            if (!user) {
+                throw new Error("User not found");
+            }
+            return {
+                id: user.id.toString(),
+                username: user.username,
+            };
         });
-        if (!user) {
-            throw new Error("User not found");
-        }
-        return {
-            id: user.id.toString(),
-            username: user.username,
-        };
-    });
+    }
+    static loginUser(username, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield prisma_1.default.user.findUnique({
+                where: { username, password },
+            });
+            if (!user) {
+                throw new Error("User not found");
+            }
+            return {
+                id: user.id.toString(),
+                username: user.username,
+            };
+        });
+    }
 }
+exports.UserService = UserService;

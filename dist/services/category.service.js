@@ -30,5 +30,43 @@ class CategoryService {
             }));
         });
     }
+    static createCategoryService(categoryName, description) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const category = yield prisma.category.create({
+                data: {
+                    categoryName,
+                    description,
+                },
+            });
+            return {
+                id: category.id.toString(),
+                categoryName: category.categoryName,
+                description: category.description,
+            };
+        });
+    }
+    static updateCategoryService(id, categoryName, description) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const category = yield prisma.category.update({
+                where: { id: Number(id) },
+                data: {
+                    categoryName,
+                    description,
+                },
+            });
+            return {
+                id: category.id.toString(),
+                categoryName: category.categoryName,
+                description: category.description,
+            };
+        });
+    }
+    static deleteCategoryService(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield prisma.category.delete({
+                where: { id: Number(id) },
+            });
+        });
+    }
 }
 exports.CategoryService = CategoryService;

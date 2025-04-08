@@ -66,9 +66,62 @@ class PerformanceController {
                 });
             }
             catch (error) {
-                console.error(error);
                 res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
                     message: messages_1.PERFORMANCES_MESSAGES.UPDATE_FAILURE,
+                    error: error.message,
+                });
+            }
+        });
+    }
+    static createPerformance(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { name, bgDesktop, bgPhone } = req.body;
+                const createdPerformance = yield performance_service_1.PerformanceService.createPerformanceService(name, bgDesktop, bgPhone);
+                res.status(httpStatus_1.default.OK).json({
+                    message: messages_1.PERFORMANCES_MESSAGES.CREATE_SUCCESS,
+                    data: createdPerformance,
+                });
+            }
+            catch (error) {
+                res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
+                    message: messages_1.PERFORMANCES_MESSAGES.CREATE_FAILURE,
+                    error: error.message,
+                });
+            }
+        });
+    }
+    static updatePerformance(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const { name, bgDesktop, bgPhone } = req.body;
+                const updatedPerformance = yield performance_service_1.PerformanceService.updatePerformanceService(id, name, bgDesktop, bgPhone);
+                res.status(httpStatus_1.default.OK).json({
+                    message: messages_1.PERFORMANCES_MESSAGES.UPDATE_SUCCESS,
+                    data: updatedPerformance,
+                });
+            }
+            catch (error) {
+                res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
+                    message: messages_1.PERFORMANCES_MESSAGES.UPDATE_FAILURE,
+                    error: error.message,
+                });
+            }
+        });
+    }
+    static deletePerformance(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                yield performance_service_1.PerformanceService.deletePerformanceService(id);
+                res.status(httpStatus_1.default.OK).json({
+                    message: messages_1.PERFORMANCES_MESSAGES.DELETE_SUCCESS,
+                });
+            }
+            catch (error) {
+                res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
+                    message: messages_1.PERFORMANCES_MESSAGES.DELETE_FAILURE,
                     error: error.message,
                 });
             }
