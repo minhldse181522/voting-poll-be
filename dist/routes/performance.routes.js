@@ -6,4 +6,7 @@ const router = (0, express_1.Router)();
 router.get("/performances", performance_controller_1.PerformanceController.getAllPerformances);
 router.get("/performanceByCategory/:id", performance_controller_1.PerformanceController.getAllPerformanceCategories);
 router.put("/performances/:id", performance_controller_1.PerformanceController.updateVotePerformance);
+router.post("/performance", performance_controller_1.PerformanceController.createPerformance);
+router.put("/performance/:id", performance_controller_1.PerformanceController.updatePerformance);
+router.delete("/performance/:id", performance_controller_1.PerformanceController.deletePerformance);
 exports.default = router;

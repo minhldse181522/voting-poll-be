@@ -77,6 +77,55 @@
  *       500:
  *         description: Internal server error
  */
+/**
+ * @swagger
+ * /api/public/login:
+ *   post:
+ *     summary: Login user
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: "johndoe"
+ *               password:
+ *                 type: string
+ *                 example: "yourPassword123"
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User logged in successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "1"
+ *                     username:
+ *                       type: string
+ *                       example: "johndoe"
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Unauthorized - Invalid username or password
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
 // Authorize with JWT Bearer token (tạm thời k cần)
 // /**
 //  * @swagger

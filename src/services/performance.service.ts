@@ -62,4 +62,62 @@ export class PerformanceService {
       vote: totalVotes._sum.vote || 0,
     };
   }
+
+  static async createPerformanceService(name: string, bgDesktop?: string, bgPhone?: string) {
+    const performance = await prisma.performance.create({
+      data: {
+        name,
+        bgDesktop,
+        bgPhone
+      }
+    })
+    const performanceData = {
+      id: performance.id.toString(),
+      name: performance.name,
+      bgDesktop: performance.bgDesktop,
+      bgPhone: performance.bgPhone
+    }
+
+    const categories = await prisma.category.findMany({
+      select: {
+        id: true
+      }
+    })
+
+    const dataToInsert = categories.map(cat => ({
+      performance_id: Number(performanceData.id),
+      category_id: cat.id,
+      vote: 0
+    }));
+
+    await prisma.performanceCategory.createMany({
+      data: dataToInsert,
+      skipDuplicates: true
+    })
+
+    return performanceData;
+  }
+
+  static async updatePerformanceService(id: string, name?: string, bgDesktop?: string, bgPhone?: string) {
+    const performance = await prisma.performance.update({
+      where: {id: Number(id)},
+      data: {
+        name,
+        bgDesktop,
+        bgPhone
+      }
+    })
+    return {
+      id: performance.id.toString(),
+      name: performance.name,
+      bgDesktop: performance.bgDesktop,
+      bgPhone: performance.bgPhone
+    };
+  }
+
+  static async deletePerformanceService(id: string) {
+    return await prisma.performance.delete({
+      where: { id: Number(id) }
+    })
+  }
 }

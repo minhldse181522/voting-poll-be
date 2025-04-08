@@ -13,6 +13,7 @@ const router = (0, express_1.Router)();
 //  *       200:
 //  *         description: A list of users
 //  */
-router.get("/users", user_controller_1.getAllUsersHandler);
-router.get("/public/users/:id", user_controller_1.getUserByIdHandler);
+router.get("/users", user_controller_1.UserController.getAllUsersHandler);
+router.get("/public/users/:id", user_controller_1.UserController.getUserByIdHandler);
+router.post("/public/login", user_controller_1.UserController.validateBusinessUser);
 exports.default = router;

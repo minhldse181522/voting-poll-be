@@ -18,4 +18,39 @@ export class CategoryService {
       description: category.description,
     }));
   }
+
+  static async createCategoryService(categoryName: string, description?: string) {
+    const category = await prisma.category.create({
+      data: {
+        categoryName,
+        description,
+      },
+    });
+    return {
+      id: category.id.toString(),
+      categoryName: category.categoryName,
+      description: category.description,
+    };
+  }
+
+  static async updateCategoryService(id: string, categoryName?: string, description?: string) {
+    const category = await prisma.category.update({
+      where: {id: Number(id)},
+      data: {
+        categoryName,
+        description,
+      },
+    });
+    return {
+      id: category.id.toString(),
+      categoryName: category.categoryName,
+      description: category.description,
+    };
+  }
+
+  static async deleteCategoryService(id: string) {
+    return await prisma.category.delete({
+      where: { id: Number(id) },
+    })
+  }
 }

@@ -51,11 +51,69 @@ export class PerformanceController {
         data: updatedPerformance,
       });
     } catch (error: any) {
-      console.error(error);
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         message: PERFORMANCES_MESSAGES.UPDATE_FAILURE,
         error: error.message,
       });
     }
   }
+
+  static async createPerformance(req: Request, res: Response): Promise<void> {
+    try {
+      const { name, bgDesktop, bgPhone } = req.body;
+      const createdPerformance = await PerformanceService.createPerformanceService(
+        name,
+        bgDesktop,
+        bgPhone
+      )
+      res.status(HTTP_STATUS.OK).json({
+        message: PERFORMANCES_MESSAGES.CREATE_SUCCESS,
+        data: createdPerformance,
+      });
+    } catch (error: any) {
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        message: PERFORMANCES_MESSAGES.CREATE_FAILURE,
+        error: error.message,
+      });
+    }
+  }
+
+  static async updatePerformance(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { name, bgDesktop, bgPhone } = req.body;
+      const updatedPerformance = await PerformanceService.updatePerformanceService(
+        id,
+        name,
+        bgDesktop,
+        bgPhone
+      )
+      res.status(HTTP_STATUS.OK).json({
+        message: PERFORMANCES_MESSAGES.UPDATE_SUCCESS,
+        data: updatedPerformance,
+      });
+    } catch (error: any) {
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        message: PERFORMANCES_MESSAGES.UPDATE_FAILURE,
+        error: error.message,
+      });
+    }
+  }
+
+  static async deletePerformance(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      await PerformanceService.deletePerformanceService(id);
+      res.status(HTTP_STATUS.OK).json({
+        message: PERFORMANCES_MESSAGES.DELETE_SUCCESS,
+      });
+      
+    } catch (error: any) {
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        message: PERFORMANCES_MESSAGES.DELETE_FAILURE,
+        error: error.message,
+      });
+    }
+  } 
+
 }

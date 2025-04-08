@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllUsersHandler, getUserByIdHandler } from "../controllers/user.controller";
+import { UserController } from "../controllers/user.controller";
 
 const router = Router();
 
@@ -13,7 +13,8 @@ const router = Router();
 //  *       200:
 //  *         description: A list of users
 //  */
-router.get("/users", getAllUsersHandler);
-router.get("/public/users/:id", getUserByIdHandler);
+router.get("/users", UserController.getAllUsersHandler);
+router.get("/public/users/:id", UserController.getUserByIdHandler);
+router.post("/public/login", UserController.validateBusinessUser);
 
 export default router;
