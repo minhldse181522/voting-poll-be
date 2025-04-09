@@ -38,11 +38,25 @@ class CategoryService {
                     description,
                 },
             });
-            return {
+            const categoryData = {
                 id: category.id.toString(),
                 categoryName: category.categoryName,
                 description: category.description,
             };
+            const performances = yield prisma.performance.findMany({
+                select: {
+                    id: true,
+                }
+            });
+            const dataToInsert = performances.map(per => ({
+                category_id: Number(categoryData.id),
+                performance_id: per.id,
+                vote: 0
+            }));
+            yield prisma.performanceCategory.createMany({
+                data: dataToInsert,
+                skipDuplicates: true
+            });
         });
     }
     static updateCategoryService(id, categoryName, description) {

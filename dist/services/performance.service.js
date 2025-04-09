@@ -52,17 +52,22 @@ class PerformanceService {
     }
     static votePerformanceService(performanceId, categoryId) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield prisma.performanceCategory.updateMany({
-                where: {
-                    performance_id: performanceId,
-                    category_id: categoryId,
-                },
-                data: { vote: { increment: 1 } },
-            });
-            const totalVotes = yield prisma.performanceCategory.aggregate({
-                _sum: { vote: true },
-                where: { performance_id: performanceId, category_id: categoryId },
-            });
+            const [_, totalVotes] = yield prisma.$transaction([
+                prisma.performanceCategory.updateMany({
+                    where: {
+                        performance_id: performanceId,
+                        category_id: categoryId,
+                    },
+                    data: { vote: { increment: 1 } },
+                }),
+                prisma.performanceCategory.aggregate({
+                    _sum: { vote: true },
+                    where: {
+                        performance_id: performanceId,
+                        category_id: categoryId,
+                    },
+                }),
+            ]);
             // Gửi dữ liệu cập nhật qua WebSocket
             websocket_service_1.default.sendToAll("voteUpdate", {
                 id: performanceId.toString(),
