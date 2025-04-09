@@ -26,11 +26,29 @@ export class CategoryService {
         description,
       },
     });
-    return {
+
+    const categoryData = {
       id: category.id.toString(),
       categoryName: category.categoryName,
       description: category.description,
     };
+
+    const performances = await prisma.performance.findMany({
+      select: {
+        id: true,
+      }
+    })
+
+    const dataToInsert = performances.map(per => ({
+      category_id: Number(categoryData.id),
+      performance_id: per.id,
+      vote: 0
+    }))
+
+    await prisma.performanceCategory.createMany({
+      data: dataToInsert,
+      skipDuplicates: true
+    })
   }
 
   static async updateCategoryService(id: string, categoryName?: string, description?: string) {
