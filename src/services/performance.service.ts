@@ -36,18 +36,22 @@ export class PerformanceService {
   }
 
   static async votePerformanceService(performanceId: number, categoryId: number) {
-    await prisma.performanceCategory.updateMany({
-      where: {
-        performance_id: performanceId,
-        category_id: categoryId,
-      },
-      data: { vote: { increment: 1 } },
-    });
-
-    const totalVotes = await prisma.performanceCategory.aggregate({
-      _sum: { vote: true },
-      where: { performance_id: performanceId, category_id: categoryId },
-    });
+    const [_, totalVotes] = await prisma.$transaction([
+      prisma.performanceCategory.updateMany({
+        where: {
+          performance_id: performanceId,
+          category_id: categoryId,
+        },
+        data: { vote: { increment: 1 } },
+      }),
+      prisma.performanceCategory.aggregate({
+        _sum: { vote: true },
+        where: {
+          performance_id: performanceId,
+          category_id: categoryId,
+        },
+      }),
+    ]);
 
     // Gửi dữ liệu cập nhật qua WebSocket
     websocketService.sendToAll("voteUpdate", {
