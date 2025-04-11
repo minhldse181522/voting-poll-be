@@ -82,13 +82,8 @@ export class PerformanceController {
   static async updatePerformance(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const { name, bgDesktop, bgPhone } = req.body;
-      const updatedPerformance = await PerformanceService.updatePerformanceService(
-        id,
-        name,
-        bgDesktop,
-        bgPhone,
-      );
+      const { name } = req.body;
+      const updatedPerformance = await PerformanceService.updatePerformanceService(id, name);
       res.status(HTTP_STATUS.OK).json({
         message: PERFORMANCES_MESSAGES.UPDATE_SUCCESS,
         data: updatedPerformance,

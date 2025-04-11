@@ -44,4 +44,20 @@ export const CATEGORIES_MESSAGES = {
   DELETE_SUCCESS: "Performance deleted successfully",
   DELETE_FAILURE: "Failed to delete performance",
   CATEGORY_NAME_REQUIRED: "Category name is required",
+  VOTE_UPDATE_SUCCESS: "Toggle vote successfully",
+  VOTE_UPDATE_FAILURE: "Toggle vote failed",
+} as const;
+
+export const SETTING_MESSAGES = {
+  RETRIEVE_SUCCESS: "Performances retrieved successfully",
+  RETRIEVE_FAILURE: "Failed to retrieve Performances",
+  RETRIEVE_SINGLE_SUCCESS: "Performance retrieved successfully",
+  RETRIEVE_SINGLE_FAILURE: "Failed to retrieve performance",
+  NOT_FOUND: "Performance not found",
+  CREATE_SUCCESS: "Performance created successfully",
+  CREATE_FAILURE: "Failed to create performance",
+  UPDATE_SUCCESS: "Performance updated successfully",
+  UPDATE_FAILURE: "Failed to update performance",
+  DELETE_SUCCESS: "Performance deleted successfully",
+  DELETE_FAILURE: "Failed to delete performance",
 } as const;

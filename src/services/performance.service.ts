@@ -67,21 +67,17 @@ export class PerformanceService {
     };
   }
 
-  static async createPerformanceService(
-    performances: { name: string; bgDesktop?: string; bgPhone?: string }[],
-  ) {
+  static async createPerformanceService(performances: { name: string }[]) {
     const createdPerformances = [];
 
-    for (const { name, bgDesktop, bgPhone } of performances) {
+    for (const { name } of performances) {
       const performance = await prisma.performance.create({
-        data: { name, bgDesktop, bgPhone },
+        data: { name },
       });
 
       const performanceData = {
         id: performance.id.toString(),
         name: performance.name,
-        bgDesktop: performance.bgDesktop,
-        bgPhone: performance.bgPhone,
       };
 
       const categories = await prisma.category.findMany({ select: { id: true } });
@@ -103,25 +99,16 @@ export class PerformanceService {
     return createdPerformances;
   }
 
-  static async updatePerformanceService(
-    id: string,
-    name?: string,
-    bgDesktop?: string,
-    bgPhone?: string,
-  ) {
+  static async updatePerformanceService(id: string, name?: string) {
     const performance = await prisma.performance.update({
       where: { id: Number(id) },
       data: {
         name,
-        bgDesktop,
-        bgPhone,
       },
     });
     return {
       id: performance.id.toString(),
       name: performance.name,
-      bgDesktop: performance.bgDesktop,
-      bgPhone: performance.bgPhone,
     };
   }
 

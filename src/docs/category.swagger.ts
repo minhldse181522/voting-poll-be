@@ -1,5 +1,52 @@
 /**
  * @swagger
+ * /api/categoryVote/{id}:
+ *   put:
+ *     summary: Update a category vote by ID
+ *     tags:
+ *       - Category
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The category ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               enabled:
+ *                 type: boolean
+ *                 example: true
+ *     responses:
+ *       200:
+ *         description: Category Vote updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: The category ID
+ *                   example: 1
+ *                 enabled:
+ *                   type: boolean
+ *                   example: true
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
  * /api/categories:
  *   get:
  *     summary: Get all categories
@@ -30,6 +77,9 @@
  *                       description:
  *                         type: string
  *                         example: "ABC"
+ *                       enabled:
+ *                         type: boolean
+ *                         example: true
  *       401:
  *         description: Unauthorized - Invalid or missing token
  *       500:

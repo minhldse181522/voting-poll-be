@@ -5,6 +5,23 @@ import { CATEGORIES_MESSAGES } from "../constants/messages";
 import { CategoryService } from "../services/category.service";
 
 export class CategoryController {
+  static async toggleVotingCategory(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { enabled } = req.body;
+      const categoryVote = await CategoryService.toggleVoting(id, enabled);
+      res.status(HTTP_STATUS.OK).json({
+        message: CATEGORIES_MESSAGES.VOTE_UPDATE_SUCCESS,
+        data: categoryVote,
+      });
+    } catch (error: any) {
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        message: CATEGORIES_MESSAGES.VOTE_UPDATE_FAILURE,
+        error: error.message,
+      });
+    }
+  }
+
   static async getAllCategories(req: Request, res: Response): Promise<void> {
     try {
       const categories = await CategoryService.getCategoryService();
@@ -13,7 +30,6 @@ export class CategoryController {
         data: categories,
       });
     } catch (error: any) {
-      console.error(error);
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         message: CATEGORIES_MESSAGES.RETRIEVE_FAILURE,
         error: error.message,

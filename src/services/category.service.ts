@@ -1,21 +1,38 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { PrismaClient } from "@prisma/client";
+import websocketService from "../socket/websocket.service";
 
 const prisma = new PrismaClient();
 
 export class CategoryService {
+  static async toggleVoting(id: string, enabled: boolean) {
+    const updatedCategory = await prisma.category.update({
+      where: { id: Number(id) },
+      data: {
+        votingEnabled: enabled,
+      },
+    });
+
+    websocketService.sendToAll("votingStateChanged", {
+      id: updatedCategory.id.toString(),
+      enabled,
+    });
+  }
+
   static async getCategoryService() {
     const categories = await prisma.category.findMany({
       select: {
         id: true,
         categoryName: true,
         description: true,
+        votingEnabled: true,
       },
     });
     return categories.map((category) => ({
       id: category.id.toString(),
       categoryName: category.categoryName,
       description: category.description,
+      enabled: category.votingEnabled,
     }));
   }
 
