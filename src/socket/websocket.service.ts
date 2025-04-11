@@ -1,4 +1,5 @@
 import { Server, Socket } from "socket.io";
+import { initRedisAdapter } from "../redis/redisAdapter";
 
 class WebSocketService {
   // Đảm bảo rằng chỉ có một instance của WebSocketService trong toàn app
@@ -18,7 +19,7 @@ class WebSocketService {
   }
 
   // Khởi tạo WebSocket server
-  public initialize(server: any) {
+  public async initialize(server: any) {
     this.io = new Server(server, {
       cors: {
         origin: [
@@ -28,6 +29,10 @@ class WebSocketService {
         // methods: ["GET", "POST"],
       },
     });
+
+    // Gắn Redis adapter vào instance io của Socket.IO
+    await initRedisAdapter(this.io);
+
     // Lắng nghe sự kiện client kết nối
     this.io.on("connection", (socket: Socket) => {
       console.log("Client connected:", socket.id);
@@ -38,7 +43,7 @@ class WebSocketService {
       });
     });
 
-    console.log("WebSocket Server Initialized");
+    console.log("WebSocket Server Initialized with Redis");
   }
 
   // Hàm để phát sự kiện từ server đến tất cả client

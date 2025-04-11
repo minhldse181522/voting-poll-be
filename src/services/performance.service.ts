@@ -67,61 +67,54 @@ export class PerformanceService {
     };
   }
 
-  static async createPerformanceService(name: string, bgDesktop?: string, bgPhone?: string) {
-    const performance = await prisma.performance.create({
-      data: {
-        name,
-        bgDesktop,
-        bgPhone
-      }
-    })
-    const performanceData = {
-      id: performance.id.toString(),
-      name: performance.name,
-      bgDesktop: performance.bgDesktop,
-      bgPhone: performance.bgPhone
+  static async createPerformanceService(performances: { name: string }[]) {
+    const createdPerformances = [];
+
+    for (const { name } of performances) {
+      const performance = await prisma.performance.create({
+        data: { name },
+      });
+
+      const performanceData = {
+        id: performance.id.toString(),
+        name: performance.name,
+      };
+
+      const categories = await prisma.category.findMany({ select: { id: true } });
+
+      const dataToInsert = categories.map((cat) => ({
+        performance_id: Number(performanceData.id),
+        category_id: cat.id,
+        vote: 0,
+      }));
+
+      await prisma.performanceCategory.createMany({
+        data: dataToInsert,
+        skipDuplicates: true,
+      });
+
+      createdPerformances.push(performanceData);
     }
 
-    const categories = await prisma.category.findMany({
-      select: {
-        id: true
-      }
-    })
-
-    const dataToInsert = categories.map(cat => ({
-      performance_id: Number(performanceData.id),
-      category_id: cat.id,
-      vote: 0
-    }));
-
-    await prisma.performanceCategory.createMany({
-      data: dataToInsert,
-      skipDuplicates: true
-    })
-
-    return performanceData;
+    return createdPerformances;
   }
 
-  static async updatePerformanceService(id: string, name?: string, bgDesktop?: string, bgPhone?: string) {
+  static async updatePerformanceService(id: string, name?: string) {
     const performance = await prisma.performance.update({
-      where: {id: Number(id)},
+      where: { id: Number(id) },
       data: {
         name,
-        bgDesktop,
-        bgPhone
-      }
-    })
+      },
+    });
     return {
       id: performance.id.toString(),
       name: performance.name,
-      bgDesktop: performance.bgDesktop,
-      bgPhone: performance.bgPhone
     };
   }
 
   static async deletePerformanceService(id: string) {
     return await prisma.performance.delete({
-      where: { id: Number(id) }
-    })
+      where: { id: Number(id) },
+    });
   }
 }

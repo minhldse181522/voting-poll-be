@@ -117,7 +117,7 @@
  * @swagger
  * /api/performance:
  *   post:
- *     summary: Create a new performacne
+ *     summary: Create multiple performances
  *     tags:
  *       - Performance
  *     requestBody:
@@ -125,44 +125,35 @@
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: The name of the performance
- *                 example: "Một triệu lý do"
- *               bgDesktop:
- *                 type: string
- *                 description: Background of Desktop (có thể để trống)
- *                 example: "https:..."
- *               bgPhone:
- *                 type: string
- *                 description: Background of Phone (có thể để trống)
- *                 example: "https:..."
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                 name:
+ *                   type: string
+ *                   description: The name of the performance
+ *                   example: "Một triệu lý do"
  *     responses:
  *       201:
- *         description: Performance created successfully
+ *         description: Performances created successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                   description: The performance ID
- *                   example: 1
- *               name:
- *                 type: string
- *                 description: The name of the performance
- *                 example: "Một triệu lý do"
- *               bgDesktop:
- *                 type: string
- *                 description: Background of Desktop (có thể để trống)
- *                 example: "https:..."
- *               bgPhone:
- *                 type: string
- *                 description: Background of Phone (có thể để trống)
- *                 example: "https:..."
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: "1"
+ *                       name:
+ *                         type: string
+ *                         example: "Một triệu lý do"
  *       400:
  *         description: Invalid input
  *       401:
@@ -195,12 +186,6 @@
  *               name:
  *                 type: string
  *                 example: "Team 5"
- *               bgDesktop:
- *                 type: string
- *                 example: "https://..."
- *               bgPhone:
- *                 type: string
- *                 example: "https://..."
  *     responses:
  *       200:
  *         description: Performance updated successfully

@@ -76,11 +76,14 @@ class PerformanceController {
     static createPerformance(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { name, bgDesktop, bgPhone } = req.body;
-                const createdPerformance = yield performance_service_1.PerformanceService.createPerformanceService(name, bgDesktop, bgPhone);
-                res.status(httpStatus_1.default.OK).json({
+                const performances = req.body; // Should be an array
+                if (!Array.isArray(performances)) {
+                    res.status(400).json({ message: "Invalid input: expected an array" });
+                }
+                const createdPerformances = yield performance_service_1.PerformanceService.createPerformanceService(performances);
+                res.status(httpStatus_1.default.CREATED).json({
                     message: messages_1.PERFORMANCES_MESSAGES.CREATE_SUCCESS,
-                    data: createdPerformance,
+                    data: createdPerformances,
                 });
             }
             catch (error) {
@@ -95,8 +98,8 @@ class PerformanceController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                const { name, bgDesktop, bgPhone } = req.body;
-                const updatedPerformance = yield performance_service_1.PerformanceService.updatePerformanceService(id, name, bgDesktop, bgPhone);
+                const { name } = req.body;
+                const updatedPerformance = yield performance_service_1.PerformanceService.updatePerformanceService(id, name);
                 res.status(httpStatus_1.default.OK).json({
                     message: messages_1.PERFORMANCES_MESSAGES.UPDATE_SUCCESS,
                     data: updatedPerformance,

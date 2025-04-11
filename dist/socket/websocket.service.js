@@ -1,6 +1,16 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const socket_io_1 = require("socket.io");
+const redisAdapter_1 = require("../redis/redisAdapter");
 class WebSocketService {
     // Mô hình Singleton
     constructor() {
@@ -16,24 +26,28 @@ class WebSocketService {
     }
     // Khởi tạo WebSocket server
     initialize(server) {
-        this.io = new socket_io_1.Server(server, {
-            cors: {
-                origin: [
-                    "http://localhost:5173", // FE dev
-                    "https://voting-poll-fe.vercel.app", // FE deploy trên Vercel
-                ],
-                // methods: ["GET", "POST"],
-            },
-        });
-        // Lắng nghe sự kiện client kết nối
-        this.io.on("connection", (socket) => {
-            console.log("Client connected:", socket.id);
-            // Lắng nghe sự kiện client ngắt kết nối
-            socket.on("disconnect", () => {
-                console.log("Client disconnected:", socket.id);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.io = new socket_io_1.Server(server, {
+                cors: {
+                    origin: [
+                        "http://localhost:5173", // FE dev
+                        "https://voting-poll-fe.vercel.app", // FE deploy trên Vercel
+                    ],
+                    // methods: ["GET", "POST"],
+                },
             });
+            // Gắn Redis adapter vào instance io của Socket.IO
+            yield (0, redisAdapter_1.initRedisAdapter)(this.io);
+            // Lắng nghe sự kiện client kết nối
+            this.io.on("connection", (socket) => {
+                console.log("Client connected:", socket.id);
+                // Lắng nghe sự kiện client ngắt kết nối
+                socket.on("disconnect", () => {
+                    console.log("Client disconnected:", socket.id);
+                });
+            });
+            console.log("WebSocket Server Initialized with Redis");
         });
-        console.log("WebSocket Server Initialized");
     }
     // Hàm để phát sự kiện từ server đến tất cả client
     sendToAll(event, data) {

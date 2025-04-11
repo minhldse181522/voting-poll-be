@@ -81,60 +81,50 @@ class PerformanceService {
             };
         });
     }
-    static createPerformanceService(name, bgDesktop, bgPhone) {
+    static createPerformanceService(performances) {
         return __awaiter(this, void 0, void 0, function* () {
-            const performance = yield prisma.performance.create({
-                data: {
-                    name,
-                    bgDesktop,
-                    bgPhone
-                }
-            });
-            const performanceData = {
-                id: performance.id.toString(),
-                name: performance.name,
-                bgDesktop: performance.bgDesktop,
-                bgPhone: performance.bgPhone
-            };
-            const categories = yield prisma.category.findMany({
-                select: {
-                    id: true
-                }
-            });
-            const dataToInsert = categories.map(cat => ({
-                performance_id: Number(performanceData.id),
-                category_id: cat.id,
-                vote: 0
-            }));
-            yield prisma.performanceCategory.createMany({
-                data: dataToInsert,
-                skipDuplicates: true
-            });
-            return performanceData;
+            const createdPerformances = [];
+            for (const { name } of performances) {
+                const performance = yield prisma.performance.create({
+                    data: { name },
+                });
+                const performanceData = {
+                    id: performance.id.toString(),
+                    name: performance.name,
+                };
+                const categories = yield prisma.category.findMany({ select: { id: true } });
+                const dataToInsert = categories.map((cat) => ({
+                    performance_id: Number(performanceData.id),
+                    category_id: cat.id,
+                    vote: 0,
+                }));
+                yield prisma.performanceCategory.createMany({
+                    data: dataToInsert,
+                    skipDuplicates: true,
+                });
+                createdPerformances.push(performanceData);
+            }
+            return createdPerformances;
         });
     }
-    static updatePerformanceService(id, name, bgDesktop, bgPhone) {
+    static updatePerformanceService(id, name) {
         return __awaiter(this, void 0, void 0, function* () {
             const performance = yield prisma.performance.update({
                 where: { id: Number(id) },
                 data: {
                     name,
-                    bgDesktop,
-                    bgPhone
-                }
+                },
             });
             return {
                 id: performance.id.toString(),
                 name: performance.name,
-                bgDesktop: performance.bgDesktop,
-                bgPhone: performance.bgPhone
             };
         });
     }
     static deletePerformanceService(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield prisma.performance.delete({
-                where: { id: Number(id) }
+                where: { id: Number(id) },
             });
         });
     }
