@@ -60,15 +60,16 @@ export class PerformanceController {
 
   static async createPerformance(req: Request, res: Response): Promise<void> {
     try {
-      const { name, bgDesktop, bgPhone } = req.body;
-      const createdPerformance = await PerformanceService.createPerformanceService(
-        name,
-        bgDesktop,
-        bgPhone
-      )
-      res.status(HTTP_STATUS.OK).json({
+      const performances = req.body; // Should be an array
+      if (!Array.isArray(performances)) {
+        res.status(400).json({ message: "Invalid input: expected an array" });
+      }
+
+      const createdPerformances = await PerformanceService.createPerformanceService(performances);
+
+      res.status(HTTP_STATUS.CREATED).json({
         message: PERFORMANCES_MESSAGES.CREATE_SUCCESS,
-        data: createdPerformance,
+        data: createdPerformances,
       });
     } catch (error: any) {
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
@@ -86,8 +87,8 @@ export class PerformanceController {
         id,
         name,
         bgDesktop,
-        bgPhone
-      )
+        bgPhone,
+      );
       res.status(HTTP_STATUS.OK).json({
         message: PERFORMANCES_MESSAGES.UPDATE_SUCCESS,
         data: updatedPerformance,
@@ -107,13 +108,11 @@ export class PerformanceController {
       res.status(HTTP_STATUS.OK).json({
         message: PERFORMANCES_MESSAGES.DELETE_SUCCESS,
       });
-      
     } catch (error: any) {
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         message: PERFORMANCES_MESSAGES.DELETE_FAILURE,
         error: error.message,
       });
     }
-  } 
-
+  }
 }
