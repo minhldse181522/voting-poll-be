@@ -25,12 +25,14 @@ export class CategoryService {
         id: true,
         categoryName: true,
         description: true,
+        votingEnabled: true,
       },
     });
     return categories.map((category) => ({
       id: category.id.toString(),
       categoryName: category.categoryName,
       description: category.description,
+      enabled: category.votingEnabled,
     }));
   }
 

@@ -77,6 +77,9 @@
  *                       description:
  *                         type: string
  *                         example: "ABC"
+ *                       enabled:
+ *                         type: boolean
+ *                         example: true
  *       401:
  *         description: Unauthorized - Invalid or missing token
  *       500:
