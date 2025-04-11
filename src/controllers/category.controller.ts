@@ -23,21 +23,16 @@ export class CategoryController {
 
   static async createCategory(req: Request, res: Response): Promise<void> {
     try {
-      const { categoryName, description } = req.body;
-      if (!categoryName) {
-        res.status(HTTP_STATUS.BAD_REQUEST).json({
-          message: CATEGORIES_MESSAGES.CATEGORY_NAME_REQUIRED,
-        });
-        return;
+      const categories = req.body; // Should be an array
+      if (!Array.isArray(categories)) {
+        res.status(400).json({ message: "Invalid input: expected an array" });
       }
 
-      const category = await CategoryService.createCategoryService(
-        categoryName,
-        description
-      );
+      const createdCategory = await CategoryService.createCategoryService(categories);
+
       res.status(HTTP_STATUS.CREATED).json({
         message: CATEGORIES_MESSAGES.CREATE_SUCCESS,
-        data: category,
+        data: createdCategory,
       });
     } catch (error: any) {
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
@@ -51,17 +46,13 @@ export class CategoryController {
     try {
       const { id } = req.params;
       const { categoryName, description } = req.body;
-      const category = await CategoryService.updateCategoryService(
-        id,
-        categoryName,
-        description
-      )
+      const category = await CategoryService.updateCategoryService(id, categoryName, description);
       res.status(HTTP_STATUS.OK).json({
         message: CATEGORIES_MESSAGES.UPDATE_SUCCESS,
         data: category,
       });
     } catch (error: any) {
-       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         message: CATEGORIES_MESSAGES.UPDATE_FAILURE,
         error: error.message,
       });
@@ -75,7 +66,6 @@ export class CategoryController {
       res.status(HTTP_STATUS.OK).json({
         message: CATEGORIES_MESSAGES.DELETE_SUCCESS,
       });
-      
     } catch (error: any) {
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         message: CATEGORIES_MESSAGES.DELETE_FAILURE,

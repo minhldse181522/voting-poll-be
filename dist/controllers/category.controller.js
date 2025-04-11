@@ -38,17 +38,14 @@ class CategoryController {
     static createCategory(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { categoryName, description } = req.body;
-                if (!categoryName) {
-                    res.status(httpStatus_1.default.BAD_REQUEST).json({
-                        message: messages_1.CATEGORIES_MESSAGES.CATEGORY_NAME_REQUIRED,
-                    });
-                    return;
+                const categories = req.body; // Should be an array
+                if (!Array.isArray(categories)) {
+                    res.status(400).json({ message: "Invalid input: expected an array" });
                 }
-                const category = yield category_service_1.CategoryService.createCategoryService(categoryName, description);
+                const createdCategory = yield category_service_1.CategoryService.createCategoryService(categories);
                 res.status(httpStatus_1.default.CREATED).json({
                     message: messages_1.CATEGORIES_MESSAGES.CREATE_SUCCESS,
-                    data: category,
+                    data: createdCategory,
                 });
             }
             catch (error) {

@@ -40,7 +40,7 @@
  * @swagger
  * /api/category:
  *   post:
- *     summary: Create a new category
+ *     summary: Create one or more categories
  *     tags:
  *       - Category
  *     requestBody:
@@ -48,36 +48,42 @@
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               categoryName:
- *                 type: string
- *                 description: The name of the category
- *                 example: "Best Performance"
- *               description:
- *                 type: string
- *                 description: Description of the category
- *                 example: "Giải dành cho tiết mục xuất sắc nhất"
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                 categoryName:
+ *                   type: string
+ *                   description: The name of the category
+ *                   example: "Best Performance"
+ *                 description:
+ *                   type: string
+ *                   description: Description of the category
+ *                   example: "Giải dành cho tiết mục xuất sắc nhất"
  *     responses:
  *       201:
- *         description: Category created successfully
+ *         description: Categories created successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                   description: The category ID
- *                   example: 1
- *                 name:
+ *                 message:
  *                   type: string
- *                   description: The name of the category
- *                   example: "Best performance"
- *                 description:
- *                   type: string
- *                   description: Description of the category
- *                   example: "Giải dành cho tiết mục xuất sắc nhất"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       categoryName:
+ *                         type: string
+ *                         example: "Best Performance"
+ *                       description:
+ *                         type: string
+ *                         example: "Giải dành cho tiết mục xuất sắc nhất"
  *       400:
  *         description: Invalid input
  *       401:
@@ -160,4 +166,4 @@
  *         description: Not found
  *       500:
  *         description: Internal server error
- */ 
+ */

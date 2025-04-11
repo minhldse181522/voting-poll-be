@@ -30,33 +30,33 @@ class CategoryService {
             }));
         });
     }
-    static createCategoryService(categoryName, description) {
+    static createCategoryService(categories) {
         return __awaiter(this, void 0, void 0, function* () {
-            const category = yield prisma.category.create({
-                data: {
-                    categoryName,
-                    description,
-                },
-            });
-            const categoryData = {
-                id: category.id.toString(),
-                categoryName: category.categoryName,
-                description: category.description,
-            };
+            const createdCategories = [];
             const performances = yield prisma.performance.findMany({
-                select: {
-                    id: true,
-                }
+                select: { id: true },
             });
-            const dataToInsert = performances.map(per => ({
-                category_id: Number(categoryData.id),
-                performance_id: per.id,
-                vote: 0
-            }));
-            yield prisma.performanceCategory.createMany({
-                data: dataToInsert,
-                skipDuplicates: true
-            });
+            for (const { categoryName, description } of categories) {
+                const category = yield prisma.category.create({
+                    data: { categoryName, description },
+                });
+                const categoryData = {
+                    id: category.id.toString(),
+                    categoryName: category.categoryName,
+                    description: category.description,
+                };
+                const dataToInsert = performances.map((per) => ({
+                    category_id: Number(categoryData.id),
+                    performance_id: per.id,
+                    vote: 0,
+                }));
+                yield prisma.performanceCategory.createMany({
+                    data: dataToInsert,
+                    skipDuplicates: true,
+                });
+                createdCategories.push(categoryData);
+            }
+            return createdCategories;
         });
     }
     static updateCategoryService(id, categoryName, description) {
