@@ -44,4 +44,6 @@ export const CATEGORIES_MESSAGES = {
   DELETE_SUCCESS: "Performance deleted successfully",
   DELETE_FAILURE: "Failed to delete performance",
   CATEGORY_NAME_REQUIRED: "Category name is required",
+  VOTE_UPDATE_SUCCESS: "Toggle vote successfully",
+  VOTE_UPDATE_FAILURE: "Toggle vote failed",
 } as const;
