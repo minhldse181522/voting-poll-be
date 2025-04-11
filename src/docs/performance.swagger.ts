@@ -133,14 +133,6 @@
  *                   type: string
  *                   description: The name of the performance
  *                   example: "Một triệu lý do"
- *                 bgDesktop:
- *                   type: string
- *                   description: Background of Desktop (có thể để trống)
- *                   example: "https://example.com/bg-desktop.jpg"
- *                 bgPhone:
- *                   type: string
- *                   description: Background of Phone (có thể để trống)
- *                   example: "https://example.com/bg-phone.jpg"
  *     responses:
  *       201:
  *         description: Performances created successfully
@@ -162,12 +154,6 @@
  *                       name:
  *                         type: string
  *                         example: "Một triệu lý do"
- *                       bgDesktop:
- *                         type: string
- *                         example: "https://example.com/bg-desktop.jpg"
- *                       bgPhone:
- *                         type: string
- *                         example: "https://example.com/bg-phone.jpg"
  *       400:
  *         description: Invalid input
  *       401:
@@ -200,12 +186,6 @@
  *               name:
  *                 type: string
  *                 example: "Team 5"
- *               bgDesktop:
- *                 type: string
- *                 example: "https://..."
- *               bgPhone:
- *                 type: string
- *                 example: "https://..."
  *     responses:
  *       200:
  *         description: Performance updated successfully

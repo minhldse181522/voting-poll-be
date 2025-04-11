@@ -2,8 +2,6 @@ model Performance {
   id          BigInt    @id @default(autoincrement())
 
   name        String    @unique @map("name") @db.VarChar(50)
-  bgDesktop   String?   @map("bg_desktop") @db.VarChar(200)
-  bgPhone     String?   @map("bg_phone") @db.VarChar(200)
 
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
   createdBy   String?   @map("created_by") @db.VarChar(36)

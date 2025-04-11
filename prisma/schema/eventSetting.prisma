@@ -1,0 +1,13 @@
+model SystemSetting {
+  id        Int     @id @default(autoincrement())
+
+  bgDesktop String? @map("bg_desktop") @db.VarChar(200)
+  bgPhone   String? @map("bg_phone") @db.VarChar(200)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy String?   @map("created_by") @db.VarChar(36)
+  updatedAt DateTime? @updatedAt @map("modified_at") @db.Timestamptz(3)
+  updatedBy String?   @map("modified_by") @db.VarChar(36)
+
+  @@map("system_setting")
+}
