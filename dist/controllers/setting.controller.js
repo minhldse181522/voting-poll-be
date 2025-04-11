@@ -12,103 +12,81 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CategoryController = void 0;
+exports.SystemSettingController = void 0;
+const setting_service_1 = require("./../services/setting.service");
 const httpStatus_1 = __importDefault(require("../constants/httpStatus"));
 const messages_1 = require("../constants/messages");
-const category_service_1 = require("../services/category.service");
-class CategoryController {
-    static toggleVotingCategory(req, res) {
+class SystemSettingController {
+    static getAllSettings(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { id } = req.params;
-                const { enabled } = req.body;
-                const categoryVote = yield category_service_1.CategoryService.toggleVoting(id, enabled);
+                const setting = yield setting_service_1.SettingService.getSettingService();
                 res.status(httpStatus_1.default.OK).json({
-                    message: messages_1.CATEGORIES_MESSAGES.VOTE_UPDATE_SUCCESS,
-                    data: categoryVote,
+                    message: messages_1.SETTING_MESSAGES.RETRIEVE_SUCCESS,
+                    data: setting,
                 });
             }
             catch (error) {
                 res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
-                    message: messages_1.CATEGORIES_MESSAGES.VOTE_UPDATE_FAILURE,
+                    message: messages_1.SETTING_MESSAGES.RETRIEVE_FAILURE,
                     error: error.message,
                 });
             }
         });
     }
-    static getAllCategories(req, res) {
+    static createSetting(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const categories = yield category_service_1.CategoryService.getCategoryService();
-                res.status(httpStatus_1.default.OK).json({
-                    message: messages_1.CATEGORIES_MESSAGES.RETRIEVE_SUCCESS,
-                    data: categories,
-                });
-            }
-            catch (error) {
-                res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
-                    message: messages_1.CATEGORIES_MESSAGES.RETRIEVE_FAILURE,
-                    error: error.message,
-                });
-            }
-        });
-    }
-    static createCategory(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const categories = req.body; // Should be an array
-                if (!Array.isArray(categories)) {
-                    res.status(400).json({ message: "Invalid input: expected an array" });
-                }
-                const createdCategory = yield category_service_1.CategoryService.createCategoryService(categories);
+                const { bgDesktop, bgPhone } = req.body;
+                const createdsetting = yield setting_service_1.SettingService.createSettingService(bgDesktop, bgPhone);
                 res.status(httpStatus_1.default.CREATED).json({
-                    message: messages_1.CATEGORIES_MESSAGES.CREATE_SUCCESS,
-                    data: createdCategory,
+                    message: messages_1.SETTING_MESSAGES.CREATE_SUCCESS,
+                    data: createdsetting,
                 });
             }
             catch (error) {
                 res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
-                    message: messages_1.CATEGORIES_MESSAGES.CREATE_FAILURE,
+                    message: messages_1.SETTING_MESSAGES.CREATE_FAILURE,
                     error: error.message,
                 });
             }
         });
     }
-    static updateCategory(req, res) {
+    static updateSetting(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                const { categoryName, description } = req.body;
-                const category = yield category_service_1.CategoryService.updateCategoryService(id, categoryName, description);
+                const { bgDesktop, bgPhone } = req.body;
+                const updatedSetting = yield setting_service_1.SettingService.updateSettingService(id, bgDesktop, bgPhone);
                 res.status(httpStatus_1.default.OK).json({
-                    message: messages_1.CATEGORIES_MESSAGES.UPDATE_SUCCESS,
-                    data: category,
+                    message: messages_1.SETTING_MESSAGES.UPDATE_SUCCESS,
+                    data: updatedSetting,
                 });
             }
             catch (error) {
                 res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
-                    message: messages_1.CATEGORIES_MESSAGES.UPDATE_FAILURE,
+                    message: messages_1.SETTING_MESSAGES.UPDATE_FAILURE,
                     error: error.message,
                 });
             }
         });
     }
-    static deleteCategory(req, res) {
+    static deletePerformance(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                yield category_service_1.CategoryService.deleteCategoryService(id);
+                yield setting_service_1.SettingService.deleteSettingService(id);
                 res.status(httpStatus_1.default.OK).json({
-                    message: messages_1.CATEGORIES_MESSAGES.DELETE_SUCCESS,
+                    message: messages_1.SETTING_MESSAGES.DELETE_SUCCESS,
                 });
             }
             catch (error) {
                 res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
-                    message: messages_1.CATEGORIES_MESSAGES.DELETE_FAILURE,
+                    message: messages_1.SETTING_MESSAGES.DELETE_FAILURE,
                     error: error.message,
                 });
             }
         });
     }
 }
-exports.CategoryController = CategoryController;
+exports.SystemSettingController = SystemSettingController;

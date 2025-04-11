@@ -7,4 +7,5 @@ router.get("/categories", category_controller_1.CategoryController.getAllCategor
 router.post("/category", category_controller_1.CategoryController.createCategory);
 router.put("/category/:id", category_controller_1.CategoryController.updateCategory);
 router.delete("/category/:id", category_controller_1.CategoryController.deleteCategory);
+router.put("/categoryVote/:id", category_controller_1.CategoryController.toggleVotingCategory);
 exports.default = router;

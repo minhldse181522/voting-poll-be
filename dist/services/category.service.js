@@ -8,12 +8,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryService = void 0;
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const client_1 = require("@prisma/client");
+const websocket_service_1 = __importDefault(require("../socket/websocket.service"));
 const prisma = new client_1.PrismaClient();
 class CategoryService {
+    static toggleVoting(id, enabled) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const updatedCategory = yield prisma.category.update({
+                where: { id: Number(id) },
+                data: {
+                    votingEnabled: enabled,
+                },
+            });
+            websocket_service_1.default.sendToAll("votingStateChanged", {
+                id: updatedCategory.id.toString(),
+                enabled,
+            });
+        });
+    }
     static getCategoryService() {
         return __awaiter(this, void 0, void 0, function* () {
             const categories = yield prisma.category.findMany({
@@ -21,12 +39,14 @@ class CategoryService {
                     id: true,
                     categoryName: true,
                     description: true,
+                    votingEnabled: true,
                 },
             });
             return categories.map((category) => ({
                 id: category.id.toString(),
                 categoryName: category.categoryName,
                 description: category.description,
+                enabled: category.votingEnabled,
             }));
         });
     }

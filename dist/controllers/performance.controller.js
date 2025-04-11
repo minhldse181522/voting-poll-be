@@ -98,8 +98,8 @@ class PerformanceController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                const { name, bgDesktop, bgPhone } = req.body;
-                const updatedPerformance = yield performance_service_1.PerformanceService.updatePerformanceService(id, name, bgDesktop, bgPhone);
+                const { name } = req.body;
+                const updatedPerformance = yield performance_service_1.PerformanceService.updatePerformanceService(id, name);
                 res.status(httpStatus_1.default.OK).json({
                     message: messages_1.PERFORMANCES_MESSAGES.UPDATE_SUCCESS,
                     data: updatedPerformance,
