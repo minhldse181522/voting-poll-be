@@ -37,8 +37,8 @@ class SystemSettingController {
     static createSetting(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { bgDesktop, bgPhone } = req.body;
-                const createdsetting = yield setting_service_1.SettingService.createSettingService(bgDesktop, bgPhone);
+                const { bgDesktop, bgPhone, textColor, buttonColor } = req.body;
+                const createdsetting = yield setting_service_1.SettingService.createSettingService(bgDesktop, bgPhone, textColor, buttonColor);
                 res.status(httpStatus_1.default.CREATED).json({
                     message: messages_1.SETTING_MESSAGES.CREATE_SUCCESS,
                     data: createdsetting,
@@ -56,8 +56,8 @@ class SystemSettingController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                const { bgDesktop, bgPhone } = req.body;
-                const updatedSetting = yield setting_service_1.SettingService.updateSettingService(id, bgDesktop, bgPhone);
+                const { bgDesktop, bgPhone, buttonColor, textColor } = req.body;
+                const updatedSetting = yield setting_service_1.SettingService.updateSettingService(id, bgDesktop, bgPhone, textColor, buttonColor);
                 res.status(httpStatus_1.default.OK).json({
                     message: messages_1.SETTING_MESSAGES.UPDATE_SUCCESS,
                     data: updatedSetting,
