@@ -56,10 +56,9 @@ class WebSocketService {
                         socket.emit("vote-denied", "Bạn đã vote ở hạng mục này rồi.");
                         return;
                     }
-                    const result = yield performance_service_1.PerformanceService.votePerformanceService(performanceId, categoryId);
+                    yield performance_service_1.PerformanceService.votePerformanceService(performanceId, categoryId);
                     yield redisClient_1.pubClient.set(voteKey, "true", "EX", 60 * 60 * 24);
                     socket.emit("vote-success", "Vote thành công!");
-                    socket.emit("vote-updated", result);
                 }));
                 // Lắng nghe sự kiện client ngắt kết nối
                 socket.on("disconnect", () => {

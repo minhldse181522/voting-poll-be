@@ -55,11 +55,10 @@ class WebSocketService {
           return;
         }
 
-        const result = await PerformanceService.votePerformanceService(performanceId, categoryId);
+        await PerformanceService.votePerformanceService(performanceId, categoryId);
         await pubClient.set(voteKey, "true", "EX", 60 * 60 * 24);
 
         socket.emit("vote-success", "Vote thành công!");
-        socket.emit("vote-updated", result);
       });
 
       // Lắng nghe sự kiện client ngắt kết nối
