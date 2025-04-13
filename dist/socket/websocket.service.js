@@ -11,6 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const socket_io_1 = require("socket.io");
 const redisAdapter_1 = require("../redis/redisAdapter");
+const redisClient_1 = require("../redis/redisClient");
+const performance_service_1 = require("../services/performance.service");
 class WebSocketService {
     // Mô hình Singleton
     constructor() {
@@ -41,6 +43,24 @@ class WebSocketService {
             // Lắng nghe sự kiện client kết nối
             this.io.on("connection", (socket) => {
                 console.log("Client connected:", socket.id);
+                socket.on("register", (data) => __awaiter(this, void 0, void 0, function* () {
+                    socket.data.deviceId = data.deviceId;
+                    socket.data.categoryId = data.categoryId;
+                }));
+                socket.on("vote", (voteData) => __awaiter(this, void 0, void 0, function* () {
+                    const { performanceId, categoryId } = voteData;
+                    const deviceId = socket.data.deviceId;
+                    const voteKey = `vote:${deviceId}:cat:${categoryId}`;
+                    const alreadyVote = yield redisClient_1.pubClient.get(voteKey);
+                    if (alreadyVote) {
+                        socket.emit("vote-denied", "Bạn đã vote ở hạng mục này rồi.");
+                        return;
+                    }
+                    const result = yield performance_service_1.PerformanceService.votePerformanceService(performanceId, categoryId);
+                    yield redisClient_1.pubClient.set(voteKey, "true", "EX", 60 * 60 * 24);
+                    socket.emit("vote-success", "Vote thành công!");
+                    socket.emit("vote-updated", result);
+                }));
                 // Lắng nghe sự kiện client ngắt kết nối
                 socket.on("disconnect", () => {
                     console.log("Client disconnected:", socket.id);
