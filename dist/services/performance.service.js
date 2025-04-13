@@ -81,6 +81,37 @@ class PerformanceService {
             };
         });
     }
+    static unVotePerformanceService(oldPerformanceId, categoryId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const [_, totalVotes] = yield prisma.$transaction([
+                prisma.performanceCategory.updateMany({
+                    where: {
+                        performance_id: oldPerformanceId,
+                        category_id: categoryId,
+                    },
+                    data: { vote: { decrement: 1 } },
+                }),
+                prisma.performanceCategory.aggregate({
+                    _sum: { vote: true },
+                    where: {
+                        performance_id: oldPerformanceId,
+                        category_id: categoryId,
+                    },
+                }),
+            ]);
+            // Gửi dữ liệu cập nhật qua WebSocket
+            websocket_service_1.default.sendToAll("voteUpdate", {
+                id: oldPerformanceId.toString(),
+                categoryId: categoryId.toString(),
+                vote: totalVotes._sum.vote || 0,
+            });
+            return {
+                id: oldPerformanceId.toString(),
+                categoryId: categoryId.toString(),
+                vote: totalVotes._sum.vote || 0,
+            };
+        });
+    }
     static createPerformanceService(performances) {
         return __awaiter(this, void 0, void 0, function* () {
             const createdPerformances = [];

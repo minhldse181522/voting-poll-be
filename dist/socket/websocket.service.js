@@ -51,14 +51,26 @@ class WebSocketService {
                     const { performanceId, categoryId } = voteData;
                     const deviceId = socket.data.deviceId;
                     const voteKey = `vote:${deviceId}:cat:${categoryId}`;
-                    const alreadyVote = yield redisClient_1.pubClient.get(voteKey);
-                    if (alreadyVote) {
-                        socket.emit("vote-denied", "Bạn đã vote ở hạng mục này rồi.");
+                    const oldPerformanceId = yield redisClient_1.pubClient.get(voteKey);
+                    // Nếu đã vote rồi và muốn đổi tiết mục
+                    if (oldPerformanceId && oldPerformanceId !== performanceId) {
+                        // Trừ phiếu tiết mục cũ
+                        yield performance_service_1.PerformanceService.unVotePerformanceService(Number(oldPerformanceId), categoryId);
+                        // Cộng phiếu tiết mục mới
+                        yield performance_service_1.PerformanceService.votePerformanceService(performanceId, categoryId);
+                        // Cập nhật lại voteKey
+                        yield redisClient_1.pubClient.set(voteKey, performanceId, "EX", 60 * 60 * 24);
+                        socket.emit("vote-success", "Bạn đã thay đổi phiếu bầu!");
                         return;
                     }
+                    // Nếu đã vote cùng tiết mục rồi thì không làm gì
+                    if (oldPerformanceId === performanceId) {
+                        socket.emit("vote-denied", "Bạn đã vote cho hạng mục này rồi.");
+                        return;
+                    }
+                    // Nếu chưa vote
                     yield performance_service_1.PerformanceService.votePerformanceService(performanceId, categoryId);
-                    yield redisClient_1.pubClient.set(voteKey, "true", "EX", 60 * 60 * 24);
-                    socket.emit("vote-success", "Vote thành công!");
+                    yield redisClient_1.pubClient.set(voteKey, performanceId.toString(), "EX", 60 * 60 * 24);
                 }));
                 // Lắng nghe sự kiện client ngắt kết nối
                 socket.on("disconnect", () => {
