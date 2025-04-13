@@ -1,5 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { initRedisAdapter } from "../redis/redisAdapter";
+import { pubClient } from "../redis/redisClient";
+import { PerformanceService } from "../services/performance.service";
 
 class WebSocketService {
   // Đảm bảo rằng chỉ có một instance của WebSocketService trong toàn app
@@ -36,6 +38,29 @@ class WebSocketService {
     // Lắng nghe sự kiện client kết nối
     this.io.on("connection", (socket: Socket) => {
       console.log("Client connected:", socket.id);
+
+      socket.on("register", async (data) => {
+        socket.data.deviceId = data.deviceId;
+        socket.data.categoryId = data.categoryId;
+      });
+
+      socket.on("vote", async (voteData) => {
+        const { performanceId, categoryId } = voteData;
+        const deviceId = socket.data.deviceId;
+        const voteKey = `vote:${deviceId}:cat:${categoryId}`;
+
+        const alreadyVote = await pubClient.get(voteKey);
+        if (alreadyVote) {
+          socket.emit("vote-denied", "Bạn đã vote ở hạng mục này rồi.");
+          return;
+        }
+
+        const result = await PerformanceService.votePerformanceService(performanceId, categoryId);
+        await pubClient.set(voteKey, "true", "EX", 60 * 60 * 24);
+
+        socket.emit("vote-success", "Vote thành công!");
+        socket.emit("vote-updated", result);
+      });
 
       // Lắng nghe sự kiện client ngắt kết nối
       socket.on("disconnect", () => {

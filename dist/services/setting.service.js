@@ -21,43 +21,55 @@ class SettingService {
                     id: true,
                     bgDesktop: true,
                     bgPhone: true,
+                    textColor: true,
+                    buttonColor: true,
                 },
             });
             return settings.map((setting) => ({
                 id: setting.id.toString(),
                 bgDesktop: setting.bgDesktop,
                 bgPhone: setting.bgPhone,
+                textColor: setting.textColor,
+                buttonColor: setting.buttonColor,
             }));
         });
     }
-    static createSettingService(bgDesktop, bgPhone) {
+    static createSettingService(bgDesktop, bgPhone, textColor, buttonColor) {
         return __awaiter(this, void 0, void 0, function* () {
             const newSetting = yield prisma.systemSetting.create({
                 data: {
                     bgDesktop,
                     bgPhone,
+                    textColor,
+                    buttonColor,
                 },
             });
             return {
                 id: newSetting.id.toString(),
                 bgDesktop: newSetting.bgDesktop,
                 bgPhone: newSetting.bgPhone,
+                textColor: newSetting.textColor,
+                buttonColor: newSetting.buttonColor,
             };
         });
     }
-    static updateSettingService(id, bgDesktop, bgPhone) {
+    static updateSettingService(id, bgDesktop, bgPhone, textColor, buttonColor) {
         return __awaiter(this, void 0, void 0, function* () {
             const setting = yield prisma.systemSetting.update({
                 where: { id: Number(id) },
                 data: {
                     bgDesktop,
                     bgPhone,
+                    textColor,
+                    buttonColor,
                 },
             });
             return {
                 id: setting.id.toString(),
                 bgDesktop: setting.bgDesktop,
                 bgPhone: setting.bgPhone,
+                textColor: setting.textColor,
+                buttonColor: setting.buttonColor,
             };
         });
     }
