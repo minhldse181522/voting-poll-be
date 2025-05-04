@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SettingService = void 0;
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const client_1 = require("@prisma/client");
+const websocket_service_1 = __importDefault(require("../socket/websocket.service"));
 const prisma = new client_1.PrismaClient();
 class SettingService {
     static getSettingService() {
@@ -78,6 +82,26 @@ class SettingService {
             return yield prisma.systemSetting.delete({
                 where: { id: Number(id) },
             });
+        });
+    }
+    static updateLanguageService(id, language) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const updatedLanguage = yield prisma.systemSetting.update({
+                where: {
+                    id: Number(id),
+                },
+                data: {
+                    language,
+                },
+            });
+            websocket_service_1.default.sendToAll("languageUpdate", {
+                id: id.toString(),
+                language: updatedLanguage.language,
+            });
+            return {
+                id: updatedLanguage.id.toString(),
+                language: updatedLanguage.language,
+            };
         });
     }
 }

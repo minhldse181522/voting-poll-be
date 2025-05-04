@@ -5,6 +5,7 @@ model SystemSetting {
   bgPhone     String? @map("bg_phone") @db.VarChar(200)
   textColor   String? @map("text_color") @db.VarChar(7)
   buttonColor String? @map("button_color") @db.VarChar(7)
+  language    String? @default("en") @map("language") @db.VarChar(5) 
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
   createdBy String?   @map("created_by") @db.VarChar(36)

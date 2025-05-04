@@ -88,5 +88,24 @@ class SystemSettingController {
             }
         });
     }
+    static updateSettingLanguage(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const { language } = req.body;
+                const updatedSetting = yield setting_service_1.SettingService.updateLanguageService(id, language);
+                res.status(httpStatus_1.default.OK).json({
+                    message: messages_1.SETTING_MESSAGES.UPDATE_SUCCESS,
+                    data: updatedSetting,
+                });
+            }
+            catch (error) {
+                res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
+                    message: messages_1.SETTING_MESSAGES.UPDATE_FAILURE,
+                    error: error.message,
+                });
+            }
+        });
+    }
 }
 exports.SystemSettingController = SystemSettingController;

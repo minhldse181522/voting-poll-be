@@ -147,3 +147,40 @@
  *       500:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /api/settingLanguage/{id}:
+ *   put:
+ *     summary: Update language
+ *     tags:
+ *       - Setting
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The setting ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               language:
+ *                 type: string
+ *                 example: "vi"
+ *     responses:
+ *       200:
+ *         description: Language updated successfully
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Language not found
+ *       500:
+ *         description: Internal server error
+ */

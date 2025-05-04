@@ -7,5 +7,6 @@ router.get("/settings", SystemSettingController.getAllSettings);
 router.post("/setting", SystemSettingController.createSetting);
 router.put("/setting/:id", SystemSettingController.updateSetting);
 router.delete("/setting/:id", SystemSettingController.deletePerformance);
+router.put("/settingLanguage/:id", SystemSettingController.updateSettingLanguage);
 
 export default router;
