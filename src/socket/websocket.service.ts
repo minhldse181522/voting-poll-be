@@ -44,36 +44,57 @@ class WebSocketService {
         socket.data.categoryId = data.categoryId;
       });
 
+      // Xử lý cho thay đổi vote
+      // socket.on("vote", async (voteData) => {
+      //   const { performanceId, categoryId } = voteData;
+      //   const deviceId = socket.data.deviceId;
+      //   const voteKey = `vote:${deviceId}:cat:${categoryId}`;
+      //   const oldPerformanceId = await pubClient.get(voteKey);
+
+      //   // Nếu đã vote rồi và muốn đổi tiết mục
+      //   if (oldPerformanceId && oldPerformanceId !== performanceId) {
+      //     // Trừ phiếu tiết mục cũ
+      //     await PerformanceService.unVotePerformanceService(Number(oldPerformanceId), categoryId);
+
+      //     // Cộng phiếu tiết mục mới
+      //     await PerformanceService.votePerformanceService(performanceId, categoryId);
+
+      //     // Cập nhật lại voteKey
+      //     await pubClient.set(voteKey, performanceId, "EX", 60 * 60 * 24);
+
+      //     socket.emit("vote-success", "Bạn đã thay đổi phiếu bầu!");
+      //     return;
+      //   }
+
+      //   // Nếu đã vote cùng tiết mục rồi thì không làm gì
+      //   if (oldPerformanceId === performanceId) {
+      //     socket.emit("vote-denied", "Bạn đã vote cho hạng mục này rồi.");
+      //     return;
+      //   }
+
+      //   // Nếu chưa vote
+      //   await PerformanceService.votePerformanceService(performanceId, categoryId);
+      //   await pubClient.set(voteKey, performanceId.toString(), "EX", 60 * 60 * 24);
+      // });
+
+      // Xử lý không cho thay đổi vote
+      // Lắng nghe sự kiện vote từ client
       socket.on("vote", async (voteData) => {
         const { performanceId, categoryId } = voteData;
         const deviceId = socket.data.deviceId;
         const voteKey = `vote:${deviceId}:cat:${categoryId}`;
         const oldPerformanceId = await pubClient.get(voteKey);
 
-        // Nếu đã vote rồi và muốn đổi tiết mục
-        if (oldPerformanceId && oldPerformanceId !== performanceId) {
-          // Trừ phiếu tiết mục cũ
-          await PerformanceService.unVotePerformanceService(Number(oldPerformanceId), categoryId);
-
-          // Cộng phiếu tiết mục mới
-          await PerformanceService.votePerformanceService(performanceId, categoryId);
-
-          // Cập nhật lại voteKey
-          await pubClient.set(voteKey, performanceId, "EX", 60 * 60 * 24);
-
-          socket.emit("vote-success", "Bạn đã thay đổi phiếu bầu!");
+        // Nếu đã vote rồi thì từ chối
+        if (oldPerformanceId) {
+          socket.emit("vote-denied", "Bạn đã vote cho hạng mục này rồi và không thể thay đổi.");
           return;
         }
 
-        // Nếu đã vote cùng tiết mục rồi thì không làm gì
-        if (oldPerformanceId === performanceId) {
-          socket.emit("vote-denied", "Bạn đã vote cho hạng mục này rồi.");
-          return;
-        }
-
-        // Nếu chưa vote
+        // Nếu chưa vote thì tiến hành vote
         await PerformanceService.votePerformanceService(performanceId, categoryId);
-        await pubClient.set(voteKey, performanceId.toString(), "EX", 60 * 60 * 24);
+        await pubClient.set(voteKey, performanceId.toString(), "EX", 60 * 60 * 24); // Vote có hiệu lực trong 24h
+        socket.emit("vote-success", "Bạn đã vote thành công!");
       });
 
       // Lắng nghe sự kiện client ngắt kết nối
